@@ -1,0 +1,47 @@
+schema {
+    query: Query,
+    mutation: Mutation #操作集合
+}
+
+type Mutation{
+    # GEN---此处以下为生成代码
+    updateUser(data:[SaveUser]):Boolean,
+    deleteUser(where:[IDBWhere]):Boolean,
+}
+
+
+type Query {
+    # GEN---此处以下为生成代码---------------------------
+    queryUser(name:String,where:[IDBWhere]):[User],
+    hello(name:Type):String
+}
+
+
+# 数据库通用查询条件
+input IDBWhere{
+    type:String ="and",
+    key:String,
+    op:String,
+    value:[String]
+}
+
+#---------------------------------------------------
+# 查询的用户
+type User {
+    id:ID,
+    group_id:String,
+    username:String,
+    nickname:String
+}
+# 保存/新增用户信息
+input SaveUser{
+    id:ID,
+    group_id:String,
+    username:String,
+    nickname:String
+}
+
+enum Type{
+    One,
+    Two,
+}
