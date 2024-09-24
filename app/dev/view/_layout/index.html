@@ -45,13 +45,21 @@
       <div id="app">
         <div class="el-card" style="margin: 20px" @click="onAdd()">
           测试页面 {{msg}} 你好啊
+          {$__APP_URL__}
+
+          <div class="name">1111</div>
         </div>
         <vue-label :title="msg"></vue-label>
+        <!-- 应用页面 -->
+        <app></app>
       </div>
 
       <script>
         const app = new Vue({
           el: "#app",
+          components: {
+            app: `url:{$__APP_URL__}`,
+          },
           data() {
             return {
               msg: 1,

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    export default {
+    module.exports = {
         props: ['title', 'rightDesc', 'bg'],
         data() {
             return {}

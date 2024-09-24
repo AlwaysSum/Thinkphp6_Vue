@@ -10,7 +10,7 @@ if (!function_exists('vueComponentsUrl')) {
         return (string)url('components/publicComponents', [
             'module' => $module,
             'name' => $name,
-        ],false);
+        ], false);
     }
 }
 

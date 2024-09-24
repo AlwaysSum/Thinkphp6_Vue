@@ -382,6 +382,7 @@
 				return component.compile();
 			})
 			.then(function(component) {
+
 				var exports = component.script !== null ? component.script.module.exports : {};
 
 				if ( component.template !== null )

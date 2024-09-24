@@ -27,10 +27,21 @@ class VueController extends BaseController
      * @return string
      * @throws \Exception
      */
-    protected function vuePage(string $template = '', array $vars = [], $layout = 'default')
+    protected function vue(string $template = '', array $vars = [], $layout = 'default')
     {
-        View::engine()->layout('_layout/' . $layout);
-        return $this->view->fetch($template, $vars);
+        //存在vue参数，则返回vue组件
+        if ($this->request->param('vue')) {
+            return $this->vueComponent($template, $vars);
+        }
+
+        View::engine()->layout(false);
+        $request = $this->request;
+        $vars["__APP_URL__"] = url($request->controller() . '/' . $request->action(), array_merge($request->param(), [
+            'vue' => true
+        ]), "");
+        // trace("@@@=>>>" . $vars["__APP_URL__"]);
+        $this->view->config(['view_suffix' => 'html']);
+        return $this->view->fetch('_layout/index', $vars);
     }
 
     /**
@@ -40,10 +51,10 @@ class VueController extends BaseController
      * @return string
      * @throws \Exception
      */
-    protected function vue(string $template = '', array $vars = [])
+    protected function vueComponent(string $template = '', array $vars = [])
     {
         View::engine()->layout(false);
-        $this->view->config(['view_suffix'=> 'vue']);
+        $this->view->config(['view_suffix' => 'vue']);
         return $this->view->fetch($template, $vars);
     }
 
