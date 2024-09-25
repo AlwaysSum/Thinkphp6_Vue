@@ -1,3 +1,4 @@
+<?php /*a:3:{s:87:"/Users/sunflower816/PhpstormProjects/fast_admin_vue_tp6/app/dev/view/_layout/index.html";i:1727281069;s:86:"/Users/sunflower816/PhpstormProjects/fast_admin_vue_tp6/app/dev/view/_public/_CSS.html";i:1726764677;s:85:"/Users/sunflower816/PhpstormProjects/fast_admin_vue_tp6/app/dev/view/_public/_JS.html";i:1727281237;}*/ ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,18 +11,37 @@
     />
     <!--一些基本的配置参数-->
     <script type="text/javascript">
-      const vueConfig = JSON.parse(`{:json_encode($vueConfig)}`);
+      const vueConfig = JSON.parse(`<?php echo json_encode($vueConfig); ?>`);
     </script>
     <!--    css-->
     <!--    引入的js和css-->
-    {include file="_public/_CSS" /}
+    <!--引入相关依赖-->
+<?php foreach($vueConfig['_PLUGINS_CSS'] as $k=>$v): ?>
+<!--引入<?php echo htmlentities($v['name']); ?> -->
+<link rel="stylesheet" type="text/css" href="/dev/<?php echo htmlentities($v['path']); ?>"></link>
+<?php endforeach; ?>
     <!--   引入的JS -->
-    {include file="_public/_JS" /}
+    <!--@必要的引入-->
+<!--引入vue-->
+<script type="text/javascript" src="/dev/plugins/vue/vue.min.js"></script>
+
+<!--HttpVueLoader-->
+<script type="text/javascript" src="/dev/plugins/vue/httpVueLoader.js"></script>
+<!--axios-->
+<script type="text/javascript" src="/dev/plugins/axios/axios.min.js"></script>
+<script type="text/javascript" src="/dev/js/axios-base.js"></script>
+
+<!--@引入其他的相关依赖-->
+<?php foreach($vueConfig['_PLUGINS_JS'] as $k=>$v): ?>
+<!--引入<?php echo htmlentities($v['name']); ?> -->
+<script type="text/javascript" src="/dev/<?php echo htmlentities($v['path']); ?>"></script>
+<?php endforeach; ?>
+
   </head>
   <body>
     <!--内容前的初始化-->
     <script >
-      const allComponents = JSON.parse(`{:json_encode(initVueComponents())}`);
+      const allComponents = JSON.parse(`<?php echo json_encode(initVueComponents()); ?>`);
 
       initVue2();
 
@@ -44,7 +64,7 @@
 
       <div id="app">
         <div class="el-card" style="margin: 20px" @click="onAdd()">
-          测试页面 {{msg}} 你好啊 {$__APP_URL__}
+          测试页面 {{msg}} 你好啊 <?php echo htmlentities($__APP_URL__); ?>
 
           <div class="name">1111</div>
         </div>
@@ -57,7 +77,7 @@
         const app = new Vue({
           el: "#app",
           components: {
-            app: `url:{$__APP_URL__}`,
+            app: `url:<?php echo htmlentities($__APP_URL__); ?>`,
           },
           data() {
             return {

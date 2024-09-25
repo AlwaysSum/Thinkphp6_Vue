@@ -30,15 +30,13 @@ class VueController extends BaseController
     protected function vue(string $template = '', array $vars = [], $layout = 'default')
     {
         //存在vue参数，则返回vue组件
-        if ($this->request->param('vue')) {
+        if ($this->request->header('vue', false)) {
             return $this->vueComponent($template, $vars);
         }
 
         View::engine()->layout(false);
         $request = $this->request;
-        $vars["__APP_URL__"] = url($request->controller() . '/' . $request->action(), array_merge($request->param(), [
-            'vue' => true
-        ]), "");
+        $vars["__APP_URL__"] = $request->url(true);
         // trace("@@@=>>>" . $vars["__APP_URL__"]);
         $this->view->config(['view_suffix' => 'html']);
         return $this->view->fetch('_layout/index', $vars);
