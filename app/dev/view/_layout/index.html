@@ -20,12 +20,21 @@
   </head>
   <body>
     <!--内容前的初始化-->
-    <script >
+    <script>
       const allComponents = JSON.parse(`{:json_encode(initVueComponents())}`);
 
       initVue2();
 
       function initVue2() {
+        // 支持scss
+        httpVueLoader.langProcessor.scss = function (scssText) {
+          return new Promise(function (resolve, reject) {
+            sass.compile(scssText, function (result) {
+              if (result.status === 0) resolve(result.text);
+              else reject(result);
+            });
+          });
+        };
         //vue的跨组件引用
         Vue.use(httpVueLoader);
         Vue.prototype.request = $axios;
@@ -39,58 +48,7 @@
         }
       }
     </script>
-    <main>
-      <!--    模版内容-->
-
-      <div id="app">
-        <div class="el-card" style="margin: 20px" @click="onAdd()">
-          测试页面 {{msg}} 你好啊 {$__APP_URL__}
-
-          <div class="name">1111</div>
-        </div>
-        <vue-label :title="msg"></vue-label>
-        <!-- 应用页面 -->
-        <app></app>
-      </div>
-
-      <script>
-        const app = new Vue({
-          el: "#app",
-          components: {
-            app: `url:{$__APP_URL__}`,
-          },
-          data() {
-            return {
-              msg: 1,
-            };
-          },
-          methods: {
-            onAdd() {
-              this.msg++;
-            },
-          },
-        });
-      </script>
-
-      <style scoped>
-        body {
-          background: #f6f8f9;
-          margin: 0px;
-        }
-
-        .main-body {
-          width: 100%;
-          height: calc(100vh - 100px);
-          position: relative;
-        }
-
-        .iframe-component {
-          width: 100%;
-          height: 100%;
-          overflow: auto;
-          border: none;
-        }
-      </style>
-    </main>
+    <!--    模版内容-->
+    {include file="_layout/default"}
   </body>
 </html>
