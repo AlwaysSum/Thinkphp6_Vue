@@ -4,7 +4,7 @@
 namespace app\dev\controller;
 
 
-use app\dev\base\VueController;
+use app\common\controller\VueController;
 
 /**
  * 一些常用的Componets
@@ -21,5 +21,4 @@ class Components extends VueController
     {
         return $this->vueComponent('_components' . DS . $module . DS . $name);
     }
-
 }

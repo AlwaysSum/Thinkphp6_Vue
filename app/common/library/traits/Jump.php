@@ -17,7 +17,6 @@ namespace app\common\library\traits;
 use think\Response;
 use think\facade\Config;
 use think\facade\Request;
-use think\response\Redirect;
 use think\facade\View as ViewTemplate;
 use think\exception\HttpResponseException;
 

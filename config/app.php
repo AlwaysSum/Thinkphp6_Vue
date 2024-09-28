@@ -17,7 +17,7 @@ return [
     // 开启应用快速访问
     'app_express' => true,
     // 默认应用
-    'default_app' => 'api',
+    'default_app' => 'admin',
     // 默认时区
     'default_timezone' => 'Asia/Shanghai',
 
@@ -25,6 +25,7 @@ return [
     'app_map' => [
         'api' => "api",
         'dev' => "dev",
+        'admin' => "admin",
     ],
     // 域名绑定（自动多应用模式有效）
     'domain_bind' => [],
@@ -34,6 +35,8 @@ return [
     ],
     // 默认AJAX 数据返回格式,可选json xml ...
     'default_ajax_return' => 'json',
+    //默认返回类型
+    'default_return_type'   => 'html',
     // 默认全局过滤方法 用逗号分隔多个
     'default_filter'         => 'htmlspecialchars',
     // 默认语言
@@ -44,9 +47,10 @@ return [
     'controller_suffix'      => false,
     // 异常页面的模板文件
     'exception_tmpl' => app()->getThinkPath() . 'tpl/think_exception.tpl',
-
+    'dispatch_success_tmpl' => app()->getBasePath().'common'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'tpl'.DIRECTORY_SEPARATOR.'dispatch_jump.tpl',
+    'dispatch_error_tmpl'   => app()->getBasePath().'common'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'tpl'.DIRECTORY_SEPARATOR.'dispatch_jump.tpl',
     // 错误显示信息,非调试模式有效
     'error_message' => '页面错误！请稍后再试～',
-    // 显示错误信息
-    'show_error_msg' => true,
+      // 显示错误信息
+      'show_error_msg'        => true,
 ];

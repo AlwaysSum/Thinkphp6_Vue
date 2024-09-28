@@ -1,0 +1,33 @@
+<div id="app">
+  <app></app>
+</div>
+
+<script>
+  const app = new Vue({
+    el: "#app",
+    components: {
+      app: `url:{$__APP_URL__}`,
+    },
+    data() {
+      return {};
+    },
+    methods: {
+      onAdd() {},
+    },
+  });
+</script>
+
+<style scoped>
+  html {
+    height: 100vh;
+  }
+  body {
+    background: #f6f8f9;
+    margin: 0px;
+    height: 100%;
+  }
+
+  #app {
+    height: 100%;
+  }
+</style>

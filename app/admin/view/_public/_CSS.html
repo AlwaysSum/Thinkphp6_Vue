@@ -1,0 +1,5 @@
+<!--引入相关依赖-->
+{foreach $vueConfig._PLUGINS_CSS as $k=>$v}
+<!--引入{$v.name} -->
+<link rel="stylesheet" type="text/css" href="__STATIC__/{$v.path}"></link>
+{/foreach}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="{$config.language}">
+  <head>
+    {include file="_public/_META" /}
+    <!--一些基本的配置参数-->
+    <script type="text/javascript">
+      const vueConfig = JSON.parse(`{:json_encode($vueConfig)}`);
+    </script>
+    <!--    css-->
+    <!--    引入的js和css-->
+    {include file="_public/_CSS" /}
+    <!--   引入的JS -->
+    {include file="_public/_JS" /}
+  </head>
+  <body>
+    <!--内容前的初始化-->
+    <script>
+      const allComponents = JSON.parse(`{:json_encode(initVueComponents())}`);
+
+      initVue2();
+
+      function initVue2() {
+        //vue的跨组件引用
+        Vue.use(httpVueLoader);
+        Vue.prototype.request = $axios;
+        //vue的公用组件配置
+        for (const component of allComponents) {
+          try {
+            Vue.component(component.name, `url:${component.path}`);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+    </script>
+
+    <!--    模版内容-->
+    {include file="_common/app"}
+  </body>
+</html>
