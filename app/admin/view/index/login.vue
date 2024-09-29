@@ -40,6 +40,7 @@ module.exports = {
       loginForm: {
         username: "",
         password: "",
+        __token__: "{:token()}",
       },
       rules: {
         username: [
@@ -76,9 +77,16 @@ module.exports = {
         if (valid) {
           alert("提交成功!");
           // 这里可以添加登录逻辑
-          $axios.post("/index/login", this.loginForm).then((res) => {
-            console.log("请求登陆:", res);
-          });
+          $axios
+            .post("/index/login", this.loginForm)
+            .then((res) => {
+              console.log("请求登陆:", res);
+            })
+            .catch((e) => {
+              console.log(e);
+              this.loginForm.__token__ = e.data.token;
+              this.$message.error(e.msg);
+            });
         } else {
           console.log("表单验证失败!!");
           return false;

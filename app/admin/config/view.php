@@ -8,12 +8,12 @@ return [
     // 模板后缀
     //替换标签
     'tpl_replace_string' => [
-        '__STATIC__' => '/dev',
-        '__JS__' => '/dev/js',
-        '__PLUGINS__' => '/dev/plugins',
-        '__CSS__' => '/dev/css',
-        '__IMG__' => '/dev/image',
-        '__VUE__' => '/dev/vue'
+        '__STATIC__' => '/static',
+        '__JS__' => '/admin/js',
+        '__PLUGINS__' => '/admin/plugins',
+        '__CSS__' => '/admin/css',
+        '__IMG__' => '/admin/image',
+        '__VUE__' => '/admin/vue'
     ],
     'view_suffix' => 'html',
     'type' => 'Think',

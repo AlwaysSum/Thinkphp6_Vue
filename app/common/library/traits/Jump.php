@@ -72,6 +72,7 @@ trait Jump
      */
     protected function error($msg = '', $url = null, $data = '', $wait = 3, array $header = [])
     {
+
         if (is_null($url)) {
             $url = Request::isAjax() ? '' : 'javascript:history.back(-1);';
         } elseif ('' !== $url && ! strpos($url, '://') && 0 !== strpos($url, '/')) {
@@ -144,6 +145,7 @@ trait Jump
      */
     protected function getResponseType()
     {
+        
         return Request::isAjax()
             ? Config::get('app.default_ajax_return')
             : Config::get('app.default_return_type');

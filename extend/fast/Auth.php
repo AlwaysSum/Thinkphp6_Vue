@@ -58,7 +58,7 @@ class Auth
 
     public function __construct()
     {
-        
+
         if ($auth = Config::get('auth')) {
             $this->config = array_merge($this->config, $auth);
         }
@@ -154,15 +154,15 @@ class Auth
             return $groups[$uid];
         }
 
-
         // 执行查询
         $user_groups = Db::name($this->config['auth_group_access'])
             ->alias('aga')
-            ->join('__' . strtoupper($this->config['auth_group']) . '__ ag', 'aga.group_id = ag.id', 'LEFT')
+            ->join($this->config['auth_group'] . ' ag', 'aga.group_id = ag.id', 'LEFT')
             ->field('aga.uid,aga.group_id,ag.id,ag.pid,ag.name,ag.rules')
             ->where("aga.uid='{$uid}' and ag.status='normal'")
-            ->select();
+            ->select()->toArray();
         $groups[$uid] = $user_groups ?: [];
+
         return $groups[$uid];
     }
 

@@ -18,7 +18,6 @@ class Index extends Backend
     public function _initialize()
     {
         parent::_initialize();
-        trace("@@@=>>>" . $this->request->url(true));
         //移除HTML标签
         $this->request->filter('trim,strip_tags,htmlspecialchars');
     }
@@ -66,6 +65,7 @@ class Index extends Backend
             $password  = $this->request->post('password');
             $keeplogin = $this->request->post('keeplogin');
             $token     = $this->request->post('__token__');
+
             $rule      = [
                 'username|' . __('Username') => 'require|length:3,30',
                 'password|' . __('Password') => 'require|length:3,30',
@@ -76,6 +76,7 @@ class Index extends Backend
                 'password'  => $password,
                 '__token__' => $token,
             ];
+
             if (Config::get('fastadmin.login_captcha')) {
                 $rule['captcha|' . __('Captcha')] = 'require|captcha';
                 $data['captcha']                = $this->request->post('captcha');

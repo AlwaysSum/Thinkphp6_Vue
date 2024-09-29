@@ -78,6 +78,7 @@ class Auth extends \fast\Auth
 
             return false;
         }
+        trace("@@@@mima:".md5(md5($password) . $admin->salt));
         if ($admin->password != md5(md5($password) . $admin->salt)) {
             $admin->loginfailure++;
             $admin->save();

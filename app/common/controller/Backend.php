@@ -132,6 +132,8 @@ class Backend extends VueController
     protected function _initialize()
     {
         parent::_initialize();
+
+
         $modulename = app()->http->getName();
         $controller = preg_replace_callback('/\.[A-Z]/', function ($d) {
             return strtolower($d[0]);
@@ -150,7 +152,7 @@ class Backend extends VueController
 
         // 定义是否AJAX请求
         ! defined('IS_AJAX') && define('IS_AJAX', $this->request->isAjax());
-
+  
 
         $this->auth = Auth::instance();
         // 设置当前请求的URI

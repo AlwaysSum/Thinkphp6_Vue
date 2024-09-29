@@ -8,7 +8,7 @@ return [
     // 模板后缀
     //替换标签
     'tpl_replace_string' => [
-        '__STATIC__' => '/dev',
+        '__STATIC__' => '/static',
         '__JS__' => '/dev/js',
         '__PLUGINS__' => '/dev/plugins',
         '__CSS__' => '/dev/css',

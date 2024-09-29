@@ -1,4 +1,5 @@
 <?php
+
 /**
  * *
  *  * ============================================================================
@@ -19,6 +20,7 @@ use think\Validate;
 use think\facade\View;
 use app\common\library\traits\Jump;
 use think\exception\ValidateException;
+use think\facade\Request;
 
 /**
  * 控制器基础类.
@@ -68,6 +70,7 @@ abstract class BaseController
         app()->http->setBind(true);
         $this->request = $this->app->request;
         $this->view = $this->app->view;
+
         // 控制器初始化
         $this->_initialize();
     }
@@ -78,10 +81,7 @@ abstract class BaseController
     }
 
     // 初始化
-    protected function _initialize()
-    {
-        
-    }
+    protected function _initialize() {}
 
     /**
      * 验证数据.

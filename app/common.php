@@ -5,8 +5,7 @@
 
 use think\facade\Event;
 use think\facade\Lang;
-
-
+use think\facade\Request;
 
 /**
  * 处理插件钩子.
@@ -89,5 +88,19 @@ if (! function_exists('__')) {
         }
 
         return Lang::get($name, $vars, $lang);
+    }
+}
+
+
+if (!function_exists('token')) {
+    /**
+     * 获取Token令牌
+     * @param string $name 令牌名称
+     * @param mixed  $type 令牌生成方法
+     * @return string
+     */
+    function token(string $name = '__token__', string $type = 'md5'): string
+    {
+        return Request::buildToken($name, $type);
     }
 }
