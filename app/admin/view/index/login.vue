@@ -81,6 +81,16 @@ module.exports = {
             .post("/index/login", this.loginForm)
             .then((res) => {
               console.log("请求登陆:", res);
+              //跳转页面
+              localStorage.setItem(
+                "lastlogin",
+                JSON.stringify({
+                  id: data.id,
+                  username: data.username,
+                  avatar: data.avatar,
+                })
+              );
+              location.href = this.$utils.fixurl(data.url);
             })
             .catch((e) => {
               console.log(e);

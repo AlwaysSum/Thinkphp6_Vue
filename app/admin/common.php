@@ -26,12 +26,8 @@ if (!function_exists('initVueComponents')) {
     {
         return [
             //标题栏
-            ['name' => 'vue-label', 'path' => vueComponentsUrl('mgc', 'label')],
-            ['name' => 'vue-table', 'path' => vueComponentsUrl('mgc', 'table')],
-            //自定义的学校操作工具栏
-            ['name' => 'school-toolbar', 'path' => vueComponentsUrl('school', 'toolbar')],
-            //header
-            ['name' => 'school-header-bar', 'path' => vueComponentsUrl('school', 'headerBar')]
+            ['name' => 'vue-label', 'path' => vueComponentsUrl('_components/mgc', 'label')],
+            ['name' => 'vue-table', 'path' => vueComponentsUrl('_components/mgc', 'table')],
         ];
     }
 }

@@ -19,6 +19,6 @@ class Components extends VueController
      */
     public function publicComponents($module, $name)
     {
-        return $this->vueComponent('_components' . DS . $module . DS . $name);
+        return $this->vueComponent($module . DS . $name);
     }
 }

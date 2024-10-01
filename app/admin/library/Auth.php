@@ -420,6 +420,108 @@ class Auth extends \fast\Auth
         return $this->breadcrumb;
     }
 
+
+
+    /**
+     * 获取左侧和顶部的菜单栏json数据
+     * @param array  $params    URL对应的badge数据
+     * @param string $fixedPage 默认页
+     *
+     * @return array
+     */
+    public function getSidebarJson($params = [], $fixedPage = 'dashboard')
+    {
+        // 边栏开始
+        Event::trigger("admin_sidebar_begin", $params);
+        $colorArr = ['red', 'green', 'yellow', 'blue', 'teal', 'orange', 'purple'];
+        $colorNums = count($colorArr);
+        $badgeList = [];
+        $module = app()->http->getName();
+        // 生成菜单的badge
+        foreach ($params as $k => $v) {
+            $url = $k;
+            if (is_array($v)) {
+                $nums = isset($v[0]) ? $v[0] : 0;
+                $color = isset($v[1]) ? $v[1] : $colorArr[(is_numeric($nums) ? $nums : strlen($nums)) % $colorNums];
+                $class = isset($v[2]) ? $v[2] : 'label';
+            } else {
+                $nums = $v;
+                $color = $colorArr[(is_numeric($nums) ? $nums : strlen($nums)) % $colorNums];
+                $class = 'label';
+            }
+            //必须nums大于0才显示
+            if ($nums) {
+                $badgeList[$url] =[
+                    'class' => $class,
+                    'color' => $color,
+                    'num' => $nums,
+                ];
+            }
+        }
+
+        // 读取管理员当前拥有的权限节点
+        $userRule = $this->getRuleList();
+        $selected = $referer = [];
+        $refererUrl = Session::get('referer');
+        $pinyin = new \Overtrue\Pinyin\Pinyin('Overtrue\Pinyin\MemoryFileDictLoader');
+        // 必须将结果集转换为数组
+        $ruleList = \app\admin\model\AuthRule::where('status', 'normal')
+            ->where('ismenu', 1)
+            ->order('weigh', 'desc')
+            ->cache('__menu__')
+            ->select()->toArray();
+        $indexRuleList = \app\admin\model\AuthRule::where('status', 'normal')
+            ->where('ismenu', 0)
+            ->where('name', 'like', '%/index')
+            ->column('name,pid');
+        $pidArr = array_filter(array_unique(array_map(function ($item) {
+            return $item['pid'];
+        }, $ruleList)));
+
+        foreach ($ruleList as $k => &$v) {
+            if (! in_array($v['name'], $userRule)) {
+                unset($ruleList[$k]);
+                continue;
+            }
+            $indexRuleName = $v['name'].'/index';
+            if (isset($indexRuleList[$indexRuleName]) && ! in_array($indexRuleName, $userRule)) {
+                unset($ruleList[$k]);
+                continue;
+            }
+            $v['icon'] = $v['icon'].' fa-fw';
+            //$v['url'] = '/' . $module . '/' . $v['name'];
+            if (! empty($v['route'])) {
+                $v['url'] = \request()->rootUrl().'/'.$v['route'];
+            } else {
+                $v['url'] = \request()->rootUrl().'/'.$v['name'];
+            }
+            $v['badge'] = isset($badgeList[$v['name']]) ? $badgeList[$v['name']] : '';
+            $v['py'] = $pinyin->abbr($v['title'], '');
+            $v['pinyin'] = $pinyin->permalink($v['title'], '');
+            $v['title'] = __($v['title']);
+            $selected = $v['name'] == $fixedPage ? $v : $selected;
+            $referer = url($v['url']) == $refererUrl ? $v : $referer;
+        }
+        $lastArr = array_diff($pidArr, array_filter(array_unique(array_map(function ($item) {
+            return $item['pid'];
+        }, $ruleList))));
+        foreach ($ruleList as $index => $item) {
+            if (in_array($item['id'], $lastArr)) {
+                unset($ruleList[$index]);
+            }
+        }
+        if ($selected == $referer) {
+            $referer = [];
+        }
+        $selected && $selected['url'] = url($selected['url']);
+        $referer && $referer['url'] = url($referer['url']);
+
+        //设置数据
+        $menu = treeArray($ruleList);
+        // trace('@test...'.json_encode($menu));
+        return [$menu, $selected, $referer];
+    }
+
     /**
      * 获取左侧和顶部菜单栏.
      *
