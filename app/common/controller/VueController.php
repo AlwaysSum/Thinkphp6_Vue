@@ -12,10 +12,8 @@ class VueController extends BaseController
 
     //插件的CSS和JS引用依赖，可以通过此处控制
     protected $_PLUGINS_CSS = [
-        ['name' => 'element-ui', 'path' => 'plugins/element-ui/index.css']
     ];
     protected $_PLUGINS_JS = [
-        ['name' => 'element-ui', 'path' => 'plugins/element-ui/index.js']
     ];
 
 

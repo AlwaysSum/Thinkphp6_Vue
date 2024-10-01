@@ -1,25 +1,25 @@
 <template>
-  <el-header class="app-el-header">
-    <div>
-      <!-- 边栏切换按钮-->
-      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-        <span class="sr-only">{:__('Toggle navigation')}</span>
-      </a>
-    </div>
-
-    <div>
-      <!-- Header content -->
-      <el-dropdown>
-        <i class="el-icon-setting" style="margin-right: 15px"></i>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>查看</el-dropdown-item>
-          <el-dropdown-item>新增</el-dropdown-item>
-          <el-dropdown-item>删除</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <span>王小虎</span>
-    </div>
-  </el-header>
+  <t-header>
+    <t-head-menu
+      mode="tile"
+      theme="light"
+      active="item2"
+      expandType="popup"
+      height="60px"
+    >
+      <img
+        slot="logo"
+        width="136"
+        class="t-menu__logo--center"
+        src="https://www.tencent.com/img/index/menu_logo_hover.png"
+        alt="logo"
+      />
+      <t-menu-item name="item1">菜单内容一</t-menu-item>
+      <t-menu-item name="item2">已选内容</t-menu-item>
+      <t-menu-item name="item3">菜单内容二</t-menu-item>
+      <t-menu-item name="item4" :disabled="true">菜单内容三</t-menu-item>
+    </t-head-menu>
+  </t-header>
 </template>
 
 <script>
@@ -31,12 +31,9 @@ module.exports = {
 </script>
 
 <style lang="css" scoped>
-.app-el-header {
+.app-index-header {
   background-color: #fff;
   color: #333;
   line-height: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 </style>

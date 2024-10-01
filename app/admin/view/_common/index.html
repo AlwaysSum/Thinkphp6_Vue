@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{$config.language}">
+<html lang="{$config.language}" >
   <head>
     {include file="_public/_META" /}
     <!--一些基本的配置参数-->
@@ -22,8 +22,8 @@
       function initVue2() {
         //vue的跨组件引用
         Vue.use(httpVueLoader);
-        Vue.prototype.request = $axios;
-        Vue.prototype.utils = VueUtils;
+        Vue.prototype.$axios = $axios;
+        Vue.prototype.$utils = VueUtils;
         //vue的公用组件配置
         for (const component of allComponents) {
           try {
@@ -32,6 +32,11 @@
             console.error(error);
           }
         }
+      }
+
+      function initTDesign() {
+        Vue.use(TDesign);
+        document.documentElement.setAttribute("theme-mode", "dark");
       }
     </script>
 

@@ -1,23 +1,25 @@
 <template>
-  <t-layout class="app-el-container">
+  <el-container class="app-el-container" direction="vertical">
     <!-- 菜单组件 -->
-    <t-aside class="app-el-aside">
+    <el-aside class="app-el-aside" width="250px">
       <!-- Aside content -->
-      <t-menu
+      <el-menu
         :mode="menuModel"
         :collapse="menuIsOpen"
-        :default-value="defaultPage.id"
-        theme="dark"
+        :default-active="defaultPage.id"
+        background-color="#202a2f"
+        text-color="#fff"
+        active-text-color="#43cea2"
       >
         <template v-for="(menu, index) in menus" :key="menu.id">
-          <t-menu-item
+          <el-menu-item
             v-if="!menu.childs || menu.childs.length == 0"
             @click="clickMenus(menu)"
-            :value="menu.id"
+            :index="menu.id"
           >
             <i :class="menu.icon"></i>
-            <span>{{ menu.title }}</span>
-          </t-menu-item>
+            <span slot="title">{{ menu.title }}</span>
+          </el-menu-item>
 
           <nav-bar-item
             v-else
@@ -25,19 +27,25 @@
             @clickurl="clickMenus"
           ></nav-bar-item>
         </template>
-      </t-menu>
-    </t-aside>
+      </el-menu>
+    </el-aside>
 
-    <t-layout class="app-body">
+    <el-container class="app-body">
       <!-- 头部组件 -->
       <header-view></header-view>
       <!-- 页面内容 -->
-      <t-content class="main-body">
+      <div class="main-body">
         <!-- Main content -->
         {if preg_match('/\/fast\/|admin/i', url('index/index'))}
-        <t-alert title="温馨提示" type="info" effect="light" show-icon closable>
+        <el-alert
+          title="温馨提示"
+          type="info"
+          effect="light"
+          show-icon
+          closable
+        >
           {:__('Security tips')}
-        </t-alert>
+        </el-alert>
         {/if}
 
         <iframe
@@ -50,12 +58,12 @@
           scrolling="yes"
           onload="window.parent"
         ></iframe>
-        <t-footer height="">
+        <el-footer height="">
           <!-- Footer content -->
-        </t-footer>
-      </t-content>
-    </t-layout>
-  </t-layout>
+        </el-footer>
+      </div>
+    </el-container>
+  </el-container>
 </template>
 
 <!-- JS -->
@@ -64,18 +72,19 @@
 const navBarItem = {
   props: ["menu"],
   template: `
-            <t-submenu :title="menu.title" :value="menu.id">
-                <template #icon>
+            <el-submenu :index="menu.id">
+                <template slot="title">
                     <i :class="menu.icon"></i>
+                    <span slot="title">{{menu.title}}</span>
                 </template>
                 <template v-for="(m,i) in menu.childs">
-                    <t-menu-item v-if="!m.childs || m.childs.length == 0" :value="m.id" @click="clickMenus(m)">
+                    <el-menu-item v-if="!m.childs || m.childs.length == 0" :index="m.id" @click="clickMenus(m)">
                         <i :class="m.icon"></i>
-                        <span>{{m.title}}</span>
-                    </t-menu-item>
+                        <span slot="title">{{m.title}}</span>
+                    </el-menu-item>
                     <nav-bar-item v-else @click="clickMenus(m)" v-else :menu="m"></nav-bar-item>
                 </template>
-            </t-submenu>`,
+            </el-submenu>`,
   methods: {
     clickMenus(menu) {
       this.$emit("clickurl", menu);
