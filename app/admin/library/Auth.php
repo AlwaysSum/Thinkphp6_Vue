@@ -78,7 +78,7 @@ class Auth extends \fast\Auth
 
             return false;
         }
-        trace("@@@@mima:".md5(md5($password) . $admin->salt));
+        trace("@@@@mima:" . md5(md5($password) . $admin->salt));
         if ($admin->password != md5(md5($password) . $admin->salt)) {
             $admin->loginfailure++;
             $admin->save();
@@ -451,7 +451,7 @@ class Auth extends \fast\Auth
             }
             //必须nums大于0才显示
             if ($nums) {
-                $badgeList[$url] =[
+                $badgeList[$url] = [
                     'class' => $class,
                     'color' => $color,
                     'num' => $nums,
@@ -463,6 +463,8 @@ class Auth extends \fast\Auth
         $userRule = $this->getRuleList();
         $selected = $referer = [];
         $refererUrl = Session::get('referer');
+
+        trace("@@@ auth=>>" . $refererUrl);
         $pinyin = new \Overtrue\Pinyin\Pinyin('Overtrue\Pinyin\MemoryFileDictLoader');
         // 必须将结果集转换为数组
         $ruleList = \app\admin\model\AuthRule::where('status', 'normal')
@@ -483,25 +485,28 @@ class Auth extends \fast\Auth
                 unset($ruleList[$k]);
                 continue;
             }
-            $indexRuleName = $v['name'].'/index';
+            $indexRuleName = $v['name'] . '/index';
             if (isset($indexRuleList[$indexRuleName]) && ! in_array($indexRuleName, $userRule)) {
                 unset($ruleList[$k]);
                 continue;
             }
-            $v['icon'] = $v['icon'].' fa-fw';
+            $v['icon'] = $v['icon'] . ' fa-fw';
             //$v['url'] = '/' . $module . '/' . $v['name'];
             if (! empty($v['route'])) {
-                $v['url'] = \request()->rootUrl().'/'.$v['route'];
+                $v['url'] = \request()->rootUrl() . '/' . $v['route'];
             } else {
-                $v['url'] = \request()->rootUrl().'/'.$v['name'];
+                $v['url'] = \request()->rootUrl() . '/' . $v['name'];
             }
             $v['badge'] = isset($badgeList[$v['name']]) ? $badgeList[$v['name']] : '';
             $v['py'] = $pinyin->abbr($v['title'], '');
             $v['pinyin'] = $pinyin->permalink($v['title'], '');
             $v['title'] = __($v['title']);
             $selected = $v['name'] == $fixedPage ? $v : $selected;
-            $referer = url($v['url']) == $refererUrl ? $v : $referer;
+            $referer = ($v['url'] == $refererUrl ||   url($v['url']) == $refererUrl) ? $v : $referer;
         }
+
+        trace("@@@ auth22=>>" . json_encode($referer));
+
         $lastArr = array_diff($pidArr, array_filter(array_unique(array_map(function ($item) {
             return $item['pid'];
         }, $ruleList))));
@@ -513,8 +518,8 @@ class Auth extends \fast\Auth
         if ($selected == $referer) {
             $referer = [];
         }
-        $selected && $selected['url'] = url($selected['url']);
-        $referer && $referer['url'] = url($referer['url']);
+        $selected && $selected['url'] = url($selected['url'])->build();
+        $referer && $referer['url'] = url($referer['url'])->build();
 
         //设置数据
         $menu = treeArray($ruleList);

@@ -1,136 +1,61 @@
-<div id="app">
-  <el-container class="app-el-container" direction="vertical">
-    <el-header class="el-header" height="">
-      <!-- Header content -->
-      <el-dropdown>
-        <i class="el-icon-setting" style="margin-right: 15px"></i>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>查看</el-dropdown-item>
-          <el-dropdown-item>新增</el-dropdown-item>
-          <el-dropdown-item>删除</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <span>王小虎</span>
-    </el-header>
-    <el-container class="app-body" direction="horizontal">
-      <el-aside class="app-el-aside" width="200px">
-        <!-- Aside content -->
-        <el-menu :default-openeds="['1', '3']">
-          <el-submenu index="1">
-            <template slot="title"
-              ><i class="el-icon-message"></i>导航一</template
-            >
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="1-4-1">选项4-1</el-menu-item>
-            </el-submenu>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title"><i class="el-icon-menu"></i>导航二</template>
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="2-1">选项1</el-menu-item>
-              <el-menu-item index="2-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="2-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="2-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="2-4-1">选项4-1</el-menu-item>
-            </el-submenu>
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title"
-              ><i class="el-icon-setting"></i>导航三</template
-            >
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="3-1">选项1</el-menu-item>
-              <el-menu-item index="3-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="3-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="3-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="3-4-1">选项4-1</el-menu-item>
-            </el-submenu>
-          </el-submenu>
-        </el-menu>
-      </el-aside>
-      <el-container direction="vertical">
-        <el-main height="">
-          <!-- Main content -->
-          <app></app>
-        </el-main>
-        <el-footer height="">
-          <!-- Footer content -->
-        </el-footer>
-      </el-container>
-    </el-container>
-  </el-container>
-</div>
+<!DOCTYPE html>
+<html lang="{$config.language}">
+  <head>
+    {include file="_public/_META" /}
+    <!--一些基本的配置参数-->
+    <script type="text/javascript">
+      const VueConfig = JSON.parse(`{:json_encode($vueConfig)}`);
+      const Config = JSON.parse(`{:json_encode($config)}`);
+    </script>
+    <!--    css-->
+    <!--    引入的js和css-->
+    {include file="_public/_CSS" /}
+    <!--   引入的JS -->
+    {include file="_public/_JS" /}
+  </head>
 
-<script>
-  const app = new Vue({
-    el: "#app",
-    components: {
-      app: `url:{$__APP_URL__}`,
-    },
-    data() {
-      return {
+  <style scoped>
+    html {
+      height: 100vh;
+    }
+    body {
+      background: #f6f8f9;
+      margin: 0px;
+      height: 100%;
+    }
 
-      };
-    },
-    methods: {
-      onAdd() {
+    #app {
+      height: 100%;
+    }
+  </style>
 
-      },
-    },
-  });
-</script>
+  <body>
+    <!--内容前的初始化-->
+    <script>
+      const allComponents = JSON.parse(`{:json_encode(initVueComponents())}`);
 
-<style scoped>
-  html {
-    height: 100vh;
-  }
-  body {
-    background: #f6f8f9;
-    margin: 0px;
-    height: 100%;
-  }
+      //vue的跨组件引用
+      Vue.use(httpVueLoader);
 
-  #app {
-    height: 100%;
-  }
+      //TDesign
+      Vue.use(TDesign);
+      console.log("TDesign初始化完成", TDesign);
+      document.documentElement.setAttribute("theme-mode", "dark");
 
-  .app-el-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
+      // vue的常用方法
+      Vue.prototype.$axios = $axios;
+      Vue.prototype.$utils = VueUtils;
+      //vue的公用组件配置
+      for (const component of allComponents) {
+        try {
+          Vue.component(component.name, `url:${component.path}`);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    </script>
 
-  .app-body {
-    height: calc(100% - 60px);
-  }
-
-  .el-header {
-    background-color: #fff;
-    color: #333;
-    line-height: 60px;
-  }
-
-  .app-el-aside {
-    color: #333;
-    background-color: #f5f5f5;
-  }
-</style>
+    <!--  模版内容-->
+    {__CONTENT__}
+  </body>
+</html>

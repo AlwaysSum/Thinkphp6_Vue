@@ -1,0 +1,198 @@
+<div id="app">
+  <t-layout class="app-el-container">
+    <!-- 菜单组件 -->
+    <t-aside class="app-el-aside">
+      <!-- Aside content -->
+      <t-menu
+        :mode="menuModel"
+        :collapse="menuIsOpen"
+        :value="currentPage.id"
+        theme="dark"
+      >
+        <template v-for="(menu, index) in menus" :key="menu.id">
+          <t-menu-item
+            v-if="!menu.childs || menu.childs.length == 0"
+            @click="()=>clickMenus(menu)"
+            :value="menu.id"
+          >
+            <i :class="menu.icon"></i>
+            <span>{{ menu.title }}</span>
+          </t-menu-item>
+
+          <nav-bar-item
+            v-else
+            :menu="menu"
+            @clickurl="(menu)=>clickMenus(menu)"
+          ></nav-bar-item>
+        </template>
+      </t-menu>
+    </t-aside>
+
+    <t-layout class="app-body">
+      <!-- 头部组件 -->
+      <header-view></header-view>
+      <!-- 页面内容 -->
+      <t-content class="main-body" v-if="currentPage!=null">
+        <!-- Main content -->
+        {if preg_match('/\/fast\/|admin/i', url('index/index'))}
+        <t-alert title="温馨提示" type="info" effect="light" show-icon closable>
+          {:__('Security tips')}
+        </t-alert>
+        {/if}
+
+        <keep-alive>
+          <component
+            ref="comp"
+            v-bind:is="appPageKey + currentPage.id"
+          ></component>
+        </keep-alive>
+        <!-- <iframe
+          ref="main-frame"
+          :src="decodeURIComponent(currentPage.url)"
+          id="main-frame"
+          name="main-frame"
+          style="overflow: visible"
+          frameborder="0"
+          scrolling="yes"
+          onload="window.parent"
+        ></iframe> -->
+      </t-content>
+    </t-layout>
+  </t-layout>
+</div>
+
+<!-- JS -->
+<script>
+  /** 列表项组件 ： 用于递归显示 */
+  const navBarItem = {
+    props: ["menu"],
+    template: `
+              <t-submenu :title="menu.title" :value="menu.id">
+                  <template #icon>
+                      <i :class="menu.icon"></i>
+                  </template>
+                  <template v-for="(m,i) in menu.childs">
+                      <t-menu-item v-if="!m.childs || m.childs.length == 0" :value="m.id" @click="clickMenus(m)">
+                          <i :class="m.icon"></i>
+                          <span>{{m.title}}</span>
+                      </t-menu-item>
+                      <nav-bar-item v-else @click="clickMenus(m)" v-else :menu="m"></nav-bar-item>
+                  </template>
+              </t-submenu>`,
+    methods: {
+      clickMenus(menu) {
+        this.$emit("clickurl", menu);
+      },
+    },
+  };
+
+  new Vue({
+    el: "#app",
+    components: {
+      "nav-bar-item": navBarItem,
+      "header-view": "url:{:vueComponentsUrl('_components/index','header')}",
+    },
+    data() {
+      const _current = JSON.parse(`{:json_encode($referermenu)}` || null);
+      const _default = JSON.parse(`{:json_encode($fixedmenu)}` || null);
+
+      console.log("current", `{$fixedmenu.url}`);
+
+      return {
+        appPageKey: "__app_page__",
+        //搜索
+        searchProps: {
+          value: "url",
+          label: "title",
+          children: "childs",
+          leaf: "childs",
+          expandTrigger: "hover",
+        },
+        // 菜单属性
+        menuModel: "vertical",
+        menuIsOpen: false,
+        menus: JSON.parse(`{:json_encode($menulist)}`),
+        currentPage: _current,
+        defaultPage: _default,
+        // 组件
+        allComponents: [],
+      };
+    },
+    mounted() {
+      this.clickMenus(this.currentPage || this.defaultPage || this.menus[0]);
+    },
+    computed: {},
+    methods: {
+      /** 点击按钮 */
+      clickMenus(menu) {
+        let findComp = this.allComponents.find((comp) => {
+          return comp.url == menu.url && comp.id == menu.id;
+        });
+
+        //如果不存在页面，则添加到列表组
+        if (findComp == null) {
+          //如果是一个vue组件的话，注册到页面
+          this.$options.components[this.appPageKey + menu.id] = httpVueLoader(
+            menu.url
+          );
+
+          //所有的菜单
+          this.allComponents.push(menu);
+        }
+
+        //设置当前menu
+        this.currentPage = menu;
+
+        window.history.pushState({}, "", menu.url + "?ref=addtabs");
+      },
+      onAdd() {},
+    },
+  });
+</script>
+
+<style scoped>
+  html {
+    height: 100vh;
+  }
+  body {
+    background: #f6f8f9;
+    margin: 0px;
+    height: 100%;
+  }
+
+  #app {
+    height: 100%;
+  }
+
+  .app-el-container {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .app-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-body {
+    transition: width 0.25s ease, margin 0.25s ease;
+    width: 100%;
+    flex: 1;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+
+  #main-frame {
+    width: 100%;
+    height: 100%;
+  }
+
+  .app-el-aside {
+    color: #333;
+    background-color: #202a2f;
+  }
+</style>

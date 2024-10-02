@@ -30,15 +30,6 @@ class Index extends Backend
     public function index()
     {
         //左侧菜单
-        // [$menulist, $navlist, $fixedmenu, $referermenu] = $this->auth->getSidebar([
-        //     //            'dashboard' => 'hot',
-        //     //            'addon'     => ['new', 'red', 'badge'],
-        //     //            'auth/rule' => __('Menu'),
-        //     //            'general'   => ['new', 'purple'],
-        // ], $this->view->site['fixedpage']);
-
-
-        //左侧菜单
         [$menulist, $fixedmenu, $referermenu] = $this->auth->getSidebarJson([
             'dashboard' => 'hot',
             'addon' => ['new', 'red', 'badge'],
@@ -55,12 +46,14 @@ class Index extends Backend
                 ]);
             }
         }
+
+        trace("@@@@@@referer=>>>>" . json_encode($referermenu));
+        trace("@@@@@@fixed=>>>>" . json_encode($fixedmenu));
         $this->view->assign('menulist', $menulist);
         // $this->view->assign('navlist', $navlist);
-        $this->view->assign('fixedmenu', $fixedmenu);
-        $this->view->assign('referermenu', $referermenu);
+        $this->view->assign('fixedmenu', $fixedmenu ? $fixedmenu : '');
+        $this->view->assign('referermenu', $referermenu ? $referermenu : '');
         $this->view->assign('title', __('Home'));
-
         return $this->vue();
     }
 

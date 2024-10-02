@@ -1,46 +1,33 @@
-<!DOCTYPE html>
-<html lang="{$config.language}" >
-  <head>
-    {include file="_public/_META" /}
-    <!--一些基本的配置参数-->
-    <script type="text/javascript">
-      const vueConfig = JSON.parse(`{:json_encode($vueConfig)}`);
-    </script>
-    <!--    css-->
-    <!--    引入的js和css-->
-    {include file="_public/_CSS" /}
-    <!--   引入的JS -->
-    {include file="_public/_JS" /}
-  </head>
-  <body>
-    <!--内容前的初始化-->
-    <script>
-      const allComponents = JSON.parse(`{:json_encode(initVueComponents())}`);
+<div id="app">
+  <app></app>
+</div>
 
-      initVue2();
+<script>
+  const app = new Vue({
+    el: "#app",
+    components: {
+      app: `url:{$__APP_URL__}`,
+    },
+    data() {
+      return {};
+    },
+    methods: {
+      onAdd() {},
+    },
+  });
+</script>
 
-      function initVue2() {
-        //vue的跨组件引用
-        Vue.use(httpVueLoader);
-        Vue.prototype.$axios = $axios;
-        Vue.prototype.$utils = VueUtils;
-        //vue的公用组件配置
-        for (const component of allComponents) {
-          try {
-            Vue.component(component.name, `url:${component.path}`);
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
+<style scoped>
+  html {
+    height: 100vh;
+  }
+  body {
+    background: #f6f8f9;
+    margin: 0px;
+    height: 100%;
+  }
 
-      function initTDesign() {
-        Vue.use(TDesign);
-        document.documentElement.setAttribute("theme-mode", "dark");
-      }
-    </script>
-
-    <!--    模版内容-->
-    {include file="_common/app"}
-  </body>
-</html>
+  #app {
+    height: 100%;
+  }
+</style>

@@ -11,10 +11,8 @@ class VueController extends BaseController
 {
 
     //插件的CSS和JS引用依赖，可以通过此处控制
-    protected $_PLUGINS_CSS = [
-    ];
-    protected $_PLUGINS_JS = [
-    ];
+    protected $_PLUGINS_CSS = [];
+    protected $_PLUGINS_JS = [];
 
 
     /**
@@ -25,18 +23,20 @@ class VueController extends BaseController
      * @return string
      * @throws \Exception
      */
-    protected function vue(string $template = '', array $vars = [], $layout = 'default')
+    protected function vue(string $template = '', array $vars = [], $layout = '_layout/default')
     {
         //存在vue参数，则返回vue组件
         if (IS_VUE) {
             return $this->vueComponent($template, $vars);
         }
 
-        View::engine()->layout(false);
+        //模版数据
+        View::engine()->layout($layout);
         $request = $this->request;
         $vars["__APP_URL__"] = $request->url(true);
         $this->view->config(['view_suffix' => 'html']);
-        return $this->view->fetch('_common/index', $vars);
+        // return $this->view->fetch($template, $vars);
+        return $this->view->fetch($template, $vars);
     }
 
     /**

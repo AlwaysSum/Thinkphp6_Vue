@@ -226,20 +226,16 @@
       }
       return this._scopeId;
     },
-
-    load: function (componentURL) {
-      return httpVueLoader.httpRequest(componentURL).then(
-        function (responseText) {
-          this.baseURI = componentURL.substr(
-            0,
-            componentURL.lastIndexOf("/") + 1
-          );
+    /** 根据文本解析 */
+    parseText(text, baseUri) {
+      return new Promise((resolve, reject) => {
+        try {
+          this.baseURI = baseUri;
           var doc = document.implementation.createHTMLDocument("");
 
           // IE requires the <base> to come with <style>
           doc.body.innerHTML =
-            (this.baseURI ? '<base href="' + this.baseURI + '">' : "") +
-            responseText;
+            (this.baseURI ? '<base href="' + this.baseURI + '">' : "") + text;
 
           for (var it = doc.body.firstChild; it; it = it.nextSibling) {
             switch (it.nodeName) {
@@ -254,8 +250,19 @@
                 break;
             }
           }
-
-          return this;
+          resolve(this);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
+    load: function (componentURL) {
+      return httpVueLoader.httpRequest(componentURL).then(
+        function (responseText) {
+          return this.parseText(
+            responseText,
+            componentURL.substr(0, componentURL.lastIndexOf("/") + 1)
+          );
         }.bind(this)
       );
     },
@@ -356,10 +363,12 @@
     return url;
   }
 
-  httpVueLoader.load = function (url, name) {
+  httpVueLoader.load = function (url, name, isText) {
     return function () {
-      return new Component(name)
-        .load(url)
+      const loadedComponent = isText
+        ? new Component(name).parseText(url)
+        : new Component(name).load(url);
+      return loadedComponent
         .then(function (component) {
           return component.normalize();
         })
@@ -414,6 +423,22 @@
               components[componentName] = Vue.component(
                 comp.name,
                 httpVueLoader.load(componentURL, comp.name)
+              );
+          } else if (typeof components[componentName] === "string") {
+            if (isNaN(componentName))
+              components[componentName] = httpVueLoader.load(
+                components[componentName],
+                componentName,
+                true
+              );
+            else
+              components[componentName] = Vue.component(
+                componentName,
+                httpVueLoader.load(
+                  components[componentName],
+                  componentName,
+                  true
+                )
               );
           }
         }
