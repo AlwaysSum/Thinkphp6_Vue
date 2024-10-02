@@ -46,16 +46,6 @@
             v-bind:is="appPageKey + currentPage.id"
           ></component>
         </keep-alive>
-        <!-- <iframe
-          ref="main-frame"
-          :src="decodeURIComponent(currentPage.url)"
-          id="main-frame"
-          name="main-frame"
-          style="overflow: visible"
-          frameborder="0"
-          scrolling="yes"
-          onload="window.parent"
-        ></iframe> -->
       </t-content>
     </t-layout>
   </t-layout>
@@ -177,13 +167,13 @@
   }
 
   .main-body {
-    transition: width 0.25s ease, margin 0.25s ease;
+    /* transition: width 0.25s ease, margin 0.25s ease;
     width: 100%;
     flex: 1;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-direction: column;
-    flex-direction: column;
+    flex-direction: column; */
   }
 
   #main-frame {
